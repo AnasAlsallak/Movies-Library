@@ -8,11 +8,16 @@ const axios = require('axios');
 const { response } = require('express');
 require('dotenv').config();
 
+const pg = require('pg');
+const { get } = require('https');
+const client = new pg.Client(process.env.DB_url);
+
 const server = express();
 
 server.use(cors());
+server.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 //Routes
 //home route
@@ -27,14 +32,18 @@ server.get('/trending',trendingRouteHandler);
 server.get('/search',searchRouteHandler);
 server.get('/top_rated',topRatedRouteHandler);
 server.get('/top_upcoming',topUpcomingRouteHandler);
+server.post('/add_movie',addMovieHandler);
+server.get('/get_movies',getMoviesHandler);
 
 //default route
 server.get('*',defaultErrorHandler)
-
-server.listen(PORT, () =>{
-    console.log(`listening on ${PORT} : I am ready`);
-    console.log("use the url : http://localhost:3000/RouteName on your browser to navigate to the desired route");
-    console.log("available routes are : / => home,favorite,trending,search,top_rated,top_upcoming")
+client.connect()
+.then(()=>{
+    server.listen(PORT, () =>{
+        console.log(`listening on ${PORT} : I am ready`);
+        console.log("use the url : http://localhost:3000/RouteName on your browser to navigate to the desired route");
+        console.log("available routes are : / => home,favorite,trending,search,top_rated,top_upcoming")
+    })
 })
 
 function DataFormater (title, poster_path,overview) {
@@ -153,6 +162,39 @@ function topUpcomingRouteHandler (req,res) {
     errorHandler(err,req,res); 
    } 
 };
+
+function addMovieHandler(req,res) {
+    try {
+        const movie = req.body;
+        const sql = `INSERT INTO Movie_list (title, release_date, poster_path,overview) VALUES ($1,$2,$3,$4) RETURNING *;`
+        const values = [movie.title, movie.release_date, movie.poster_path, movie.overview];
+
+        client.query(sql, values)
+            .then((data) => {
+                res.send("your data was added !");
+            })
+            .catch(error => {
+                // console.log(error);
+                errorHandler(error, req, res);
+            });
+    } catch (error) {
+        errorHandler(error, req, res);
+    }
+
+}
+
+function getMoviesHandler(req,res) {
+    const sql = `SELECT * FROM movie_list ;`
+
+    client.query(sql)
+    .then((data) => {
+        res.send(data.rows);
+    })
+        .catch(error => {
+            errorHandler(error, req, res);
+        });
+}
+
 
 
 
