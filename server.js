@@ -18,10 +18,10 @@ const PORT = 3000;
 //home route
 server.get('/',homeRouteHandler);
 
-// http://localhost:3000/favorite
+//http://localhost:3000/favorite
 server.get('/favorite',favoriteRouteHandler);
 
-//trending route
+//other routes
 
 server.get('/trending',trendingRouteHandler);
 server.get('/search',searchRouteHandler);
@@ -30,6 +30,8 @@ server.get('/top_upcoming',topUpcomingRouteHandler);
 
 //default route
 server.get('*',defaultErrorHandler)
+
+server.use(errorHandler); 
 
 server.listen(PORT, () =>{
     console.log(`listening on ${PORT} : I am ready`);
