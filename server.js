@@ -23,10 +23,10 @@ const PORT = process.env.PORT || 3000;
 //home route
 server.get('/', homeRouteHandler);
 
-// http://localhost:3000/favorite
-server.get('/favorite', favoriteRouteHandler);
+//http://localhost:3000/favorite
+server.get('/favorite',favoriteRouteHandler);
 
-//routes
+//other routes
 
 server.get('/trending', trendingRouteHandler);
 server.get('/search', searchRouteHandler);
@@ -40,6 +40,8 @@ server.get('/get_movie/:id', getMovieHandler);
 
 //default route
 server.get('*', defaultErrorHandler)
+
+server.use(errorHandler); 
 client.connect()
     .then(() => {
         server.listen(PORT, () => {
