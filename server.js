@@ -170,8 +170,8 @@ function topUpcomingRouteHandler(req, res) {
 function addMovieHandler(req, res) {
     try {
         const movie = req.body;
-        const sql = `INSERT INTO Movie_list (title, release_date, poster_path,overview) VALUES ($1,$2,$3,$4) RETURNING *;`;
-        const values = [movie.title, movie.release_date, movie.poster_path, movie.overview];
+        const sql = `INSERT INTO Movie_list (title, release_date, poster_path,overview,comment) VALUES ($1,$2,$3,$4,$5) RETURNING *;`;
+        const values = [movie.title, movie.release_date, movie.poster_path, movie.overview,movie.comment];
         client.query(sql, values)
             .then((data) => {
                 res.send("your data was added !");
