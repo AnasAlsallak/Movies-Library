@@ -202,9 +202,12 @@ function deleteMovieHandler(req, res) {
     const sql = `DELETE FROM Movie_list WHERE id=${id}`;
     client.query(sql)
         .then((data) => {
-            res.status(204).json({});
-        })
-        .catch((err) => {
+            const sql = `SELECT * FROM movie_list ;`;
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows);
+                })        
+            }).catch((err) => {
             errorHandler(err, req, res);
         });
 
@@ -216,9 +219,12 @@ function updateMovieHandler(req, res) {
     const values = [req.body.title, req.body.release_date, req.body.poster_path, req.body.overview];
     client.query(sql, values)
         .then((data) => {
-            res.status(200).send(data.rows);
-        })
-        .catch((err) => {
+            const sql = `SELECT * FROM movie_list ;`;
+            client.query(sql)
+                .then((data) => {
+                    res.send(data.rows);
+                })        
+            }).catch((err) => {
             errorHandler(err, req, res);
         });
 };
