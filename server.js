@@ -215,8 +215,8 @@ function deleteMovieHandler(req, res) {
 
 function updateMovieHandler(req, res) {
     const id = req.params.id;
-    const sql = `UPDATE Movie_list SET title=$1, release_date=$2, poster_path=$3, overview=$4 WHERE id=${id} RETURNING *`;
-    const values = [req.body.title, req.body.release_date, req.body.poster_path, req.body.overview];
+    const sql = `UPDATE Movie_list SET comment=$1 WHERE id=${id} RETURNING *`;
+    const values = [req.body.comment];
     client.query(sql, values)
         .then((data) => {
             const sql = `SELECT * FROM movie_list ;`;
